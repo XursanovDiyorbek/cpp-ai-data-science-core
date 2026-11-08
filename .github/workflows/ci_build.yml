@@ -1,31 +1,25 @@
-name: C++ CI Build & Verification
+name: C++ checks
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [main]
   pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: '0 0 * * *'
+    branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository code
+    - name: Check out code
       uses: actions/checkout@v4
 
-    - name: Set up C++ Build Environment
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y g++ build-essential
+    - name: Compile with strict warnings
+      run: g++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -Iinclude src/matrix.cpp tests/matrix_tests.cpp -o matrix_tests
 
-    - name: Compile C++ Matrix Operations
-      run: |
-        g++ -std=c++17 -Wall -Wextra -O3 matrix/matrix_operations.cpp -o matrix_ops
-
-    - name: Execute and Verify C++ Matrix Operations
-      run: |
-        ./matrix_ops
+    - name: Run matrix tests
+      run: ./matrix_tests
