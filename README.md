@@ -32,4 +32,5 @@ g++ -std=c++17 -Wall -Wextra -Wpedantic -Iinclude src/matrix.cpp examples/matrix
 
 ## Next steps
 
-Future exercises may add a contiguous matrix representation and benchmarks against this nested-vector version. Those are planned work, not implemented features.
+Future exercises may add a contiguous matrix representation and benchmarks against this nested-vector version. Those are planned work, not implemented features..
+
