@@ -1,7 +1,71 @@
-#include <cmath>
-#include <iomanip>
 #include <iostream>
-#include <numeric>
+#include <vector>
+
+void trainLinearRegression(const std::vector<double>& x, const std::vector<double>& y, double& weight, double& bias, double learningRate, int epochs) {
+    int n = x.size();
+    for (int epoch = 0; epoch < epochs; ++epoch) {
+        double weightGradient = 0.0;
+        double biasGradient = 0.0;
+        for (int i = 0; i < n; ++i) {
+            double prediction = weight * x[i] + bias;
+            double error = prediction - y[i];
+            weightGradient += (2.0 / n) * error * x[i];
+            biasGradient += (2.0 / n) * error;
+        }
+        weight -= learningRate * weightGradient;
+        bias -= learningRate * biasGradient;
+    }
+}
+
+int main() {
+    std::vector<double> x = {1.0, 2.0, 3.0, 4.0, 5.0};
+    std::vector<double> y = {2.0, 4.0, 6.0, 8.0, 10.0};
+
+    double weight = 0.0;
+    double bias = 0.0;
+    double learningRate = 0.01;
+    int epochs = 1000;
+
+    trainLinearRegression(x, y, weight, bias, learningRate, epochs);
+
+    std::cout << "Trained Weight: " << weight << std::endl;
+    std::cout << "Trained Bias: " << bias << std::endl;
+
+    return 0;
+} 
+
+void trainLinearRegression(const std::vector<double>& x, const std::vector<double>& y, double& weight, double& bias, double learningRate, int epochs) {
+    int n = x.size();
+    for (int epoch = 0; epoch < epochs; ++epoch) {
+        double weightGradient = 0.0;
+        double biasGradient = 0.0;
+        for (int i = 0; i < n; ++i) {
+            double prediction = weight * x[i] + bias;
+            double error = prediction - y[i];
+            weightGradient += (2.0 / n) * error * x[i];
+            biasGradient += (2.0 / n) * error;
+        }
+        weight -= learningRate * weightGradient;
+        bias -= learningRate * biasGradient;
+    }
+}
+
+int main() {
+    std::vector<double> x = {1.0, 2.0, 3.0, 4.0, 5.0};
+    std::vector<double> y = {2.0, 4.0, 6.0, 8.0, 10.0};
+
+    double weight = 0.0;
+    double bias = 0.0;
+    double learningRate = 0.01;
+    int epochs = 1000;
+
+    trainLinearRegression(x, y, weight, bias, learningRate, epochs);
+
+    std::cout << "Trained Weight: " << weight << std::endl;
+    std::cout << "Trained Bias: " << bias << std::endl;
+
+    return 0;
+}
 #include <stdexcept>
 #include <vector>
 
