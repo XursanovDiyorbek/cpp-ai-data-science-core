@@ -6,20 +6,44 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    - cron: '0 16 * * *'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out code
-      uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: Compile with strict warnings
-      run: g++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -Iinclude src/matrix.cpp tests/matrix_tests.cpp -o matrix_tests
+      - name: Compile with strict warnings
+        run: g++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -Iinclude src/matrix.cpp tests/matrix_tests.cpp -o matrix_tests
 
-    - name: Run matrix tests
-      run: ./matrix_tests
+      - name: Run matrix tests
+        run: ./matrix_tests
+
+      - name: Compile all C++ files
+        run: |
+          for f in $(find . -name "*.cpp"); do
+            echo "Compiling $f..."
+            g++ -std=c++17 -Wall -Wextra -Iinclude -c "$f" -o /tmp/build_check.o
+          done
+
+      - name: Log daily build metrics
+        if: github.event_name != 'push'
+        run: |
+          mkdir -p benchmarks
+          echo "$(date -u '+%Y-%m-%d %H:%M:%S UTC') - Build & Tests: SUCCESS (trigger: ${{ github.event_name }})" >> benchmarks/daily_build_metrics.log
+
+      - name: Commit and push daily metrics
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "XursanovDiyorbek"
+          git config user.email "XursanovDiyorbek@users.noreply.github.com"
+          git add benchmarks/daily_build_metrics.log
+          git commit -m "perf(benchmarks): log automated daily C++ CI build metrics" || exit 0
+          git push origin main
